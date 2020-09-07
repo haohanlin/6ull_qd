@@ -9,6 +9,12 @@
 #define CHRDEVBASE_MAJOR    200    /*主设备号*/
 #define CHRDEVBASE_NAME     "chrdevbase"
 
+
+static char readbuf[100];
+static char writebuf[100];
+staric char kerneldata[] = {"kernel data!"};
+
+
 /*
 *打开设备
 * inode : 传递给驱动的 inode
@@ -32,7 +38,18 @@ static int chrdevbase_open(struct inode *inode,struct file *filp)
 static ssizet_t chrdevbase_read(struct file *filp, char __user *buf, size_t cnt, lofft *offt)
 {
     int retvalue = 0;
+    memcpy(readbuf,kerneldata,sizeof(kerneldata));
+    retvalue = copy_to_user(buf, readbuf, cnt);
+    if(retvalue == 0)
+    {
+        printk("kernel senddata ok \r\n");
+    }
+    else
+    {
+        printk("kernel send data failed \r\n");
+    }
     
+    return 0;
 }
 
 /*
@@ -45,6 +62,16 @@ static ssizet_t chrdevbase_read(struct file *filp, char __user *buf, size_t cnt,
 */
 static ssize_t chrdevbase_writh(struct file *filp, const char __user *buf, size_t cnt, loff_t *offt)
 {
+    int ret = 0;
+    ret = copy_from_user(writebuf, buf, cnt);
+    if(ret == 0)
+    {
+        printk("kernel recev deat: %s \r\n", writebuf);
+    }
+    else
+    {
+        printk("kernel recev data failed \r\n");
+    }
     return 0;
 }
 
@@ -55,7 +82,7 @@ static ssize_t chrdevbase_writh(struct file *filp, const char __user *buf, size_
 */
 static int chrdevbase_release(struct inode *inode, struct file *file)
 {
-
+    return 0;
 }
 
 
@@ -64,10 +91,10 @@ static int chrdevbase_release(struct inode *inode, struct file *file)
 */
 static struct file_operations chrdevbase_fops = {
     .owner = THIS_MODULE,
-    .open = 
-    .read =
-    .write =
-    .release =
+    .open = chrdevbase_open,
+    .read = chrdevbase_read,
+    .write = chrdevbase_writh,
+    .release = chrdevbase_release,
 }
 
 
