@@ -1,3 +1,11 @@
+/*
+ * @Author: hongxing.wu
+ * @Date: 2020-09-08 02:04:53
+ * @LastEditTime: 2020-09-08 02:09:17
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \6ull_qd\chrdevbase.c
+ */
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
